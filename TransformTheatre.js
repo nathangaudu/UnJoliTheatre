@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import studio from "@theatre/studio";
-import { getProject } from "@theatre/core";
+import { getProject, types, val } from "@theatre/core";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 
 export default class TransformTheatre {
@@ -20,7 +20,79 @@ export default class TransformTheatre {
 
         const project = getProject("THREE.js x Theatre.js");
 
-        const sheet = project.sheet("Animated scene");
+        this.sheet = project.sheet("Animated scene");
+        this.sheetArr = [];
+
+        this.addToSheet = ({ mesh, name, position, rotation, scale }) => {
+            const sheetObj = this.sheet.object(name, {
+                ...(position
+                    ? {
+                          position: types.compound({
+                              x: types.number(mesh.position.x, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              y: types.number(mesh.position.y, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              z: types.number(mesh.position.z, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                          }),
+                      }
+                    : {}),
+                ...(rotation
+                    ? {
+                          rotation: types.compound({
+                              x: types.number(mesh.rotation.x, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              y: types.number(mesh.rotation.y, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              z: types.number(mesh.rotation.z, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                          }),
+                      }
+                    : {}),
+                ...(scale
+                    ? {
+                          scale: types.compound({
+                              x: types.number(mesh.scale.x, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              y: types.number(mesh.scale.y, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                              z: types.number(mesh.scale.z, {
+                                  nudgeMultiplier: 0.01,
+                              }),
+                          }),
+                      }
+                    : {}),
+            });
+
+            sheetObj.onValuesChange(({ position, rotation, scale }) => {
+                if (position) {
+                    mesh.position.set(position.x, position.y, position.z);
+                }
+
+                if (rotation) {
+                    mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+                }
+
+                if (scale) {
+                    mesh.scale.set(scale.x, scale.y, scale.z);
+                }
+            });
+
+            this.sheetArr.push(sheetObj);
+
+            const { projectId, sheetId, sheetInstanceId, objectKey } =
+                sheetObj.address;
+
+            console.log(projectId, sheetId, sheetInstanceId, objectKey);
+        };
     }
 
     setTranformControls() {
@@ -49,7 +121,25 @@ export default class TransformTheatre {
             this.mouseDown = false;
         });
 
-        this.transformControl.addEventListener("objectChange", (event) => {});
+        this.transformControl.addEventListener("objectChange", (event) => {
+            const obj = this.sheetArr.find(
+                (obj) => obj.address.objectKey === this.intersected.uuid
+            );
+
+            studio.transaction(({ set }) => {
+                set(obj.props.position.x, this.intersected.position.x);
+                set(obj.props.position.y, this.intersected.position.y);
+                set(obj.props.position.z, this.intersected.position.z);
+
+                set(obj.props.rotation.x, this.intersected.rotation.x);
+                set(obj.props.rotation.y, this.intersected.rotation.y);
+                set(obj.props.rotation.z, this.intersected.rotation.z);
+
+                set(obj.props.scale.x, this.intersected.scale.x);
+                set(obj.props.scale.y, this.intersected.scale.y);
+                set(obj.props.scale.z, this.intersected.scale.z);
+            });
+        });
 
         window.addEventListener("keydown", (e) => {
             let key = e.key.toLocaleLowerCase();
@@ -88,7 +178,8 @@ export default class TransformTheatre {
                 this.disableRaycast === false
             ) {
                 const intersectTarget = intersects.find(
-                    (el) => el.object.type === "Mesh"
+                    (el) =>
+                        el.object.type === "Mesh" && el.object.renderOrder === 0 // handler invisible cylinder from transformcontrol => his renderOrder = "infinity"
                 );
 
                 if (intersectTarget) {

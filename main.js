@@ -5,6 +5,7 @@ import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
 import TransformTheatre from "./TransformTheatre";
+import { types, val } from "@theatre/core";
 
 class Experience {
     constructor(canvas) {
@@ -21,13 +22,6 @@ class Experience {
         this.setEvents();
         this.setDebug();
         this.setTick();
-
-        this.transformTheatre = new TransformTheatre(
-            this.renderer,
-            this.scene,
-            this.camera,
-            this.controls
-        );
     }
 
     setMesh() {
@@ -142,11 +136,7 @@ class Experience {
 
         this.renderer.render(this.scene, this.camera);
 
-        this.mesh.rotation.y += this.deltaTime;
-
         this.updateControls(this.deltaTime);
-
-        // this.transformTheatre.update();
 
         this.stats.end();
         requestAnimationFrame(this.tick);
@@ -167,6 +157,23 @@ class Experience {
         dirFolder
             .add(this.dir.position, "z", 0, 10)
             .onChange(() => this.dir.lookAt(0, 0, 0));
+
+        // Theatre part
+
+        this.transformTheatre = new TransformTheatre(
+            this.renderer,
+            this.scene,
+            this.camera,
+            this.controls
+        );
+
+        this.transformTheatre.addToSheet({
+            mesh: this.mesh,
+            name: "Box",
+            position: true,
+            rotation: true,
+            scale: true,
+        });
     }
 }
 
