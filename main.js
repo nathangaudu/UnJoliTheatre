@@ -4,6 +4,7 @@ import vertex from "./shaders/vertex.glsl?raw";
 import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
+import TransformTheatre from "./TransformTheatre";
 
 class Experience {
     constructor(canvas) {
@@ -20,6 +21,13 @@ class Experience {
         this.setEvents();
         this.setDebug();
         this.setTick();
+
+        this.transformTheatre = new TransformTheatre(
+            this.renderer,
+            this.scene,
+            this.camera,
+            this.controls
+        );
     }
 
     setMesh() {
@@ -29,6 +37,7 @@ class Experience {
                 color: "hotpink",
             })
         );
+        this.mesh.name = "My Rectangle";
 
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
@@ -59,6 +68,7 @@ class Experience {
 
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.enableDamping = true;
+        this.controls = controls;
 
         this.updateControls = function (deltaTime) {
             controls.dampingFactor = deltaTime * 5;
@@ -74,7 +84,7 @@ class Experience {
         this.scene.add(this.dir);
 
         this.dirHelp = new THREE.CameraHelper(this.dir.shadow.camera, 1, "red");
-        this.scene.add(this.dirHelp);
+        // this.scene.add(this.dirHelp);
 
         this.ambient = new THREE.AmbientLight();
         this.scene.add(this.ambient);
@@ -136,12 +146,15 @@ class Experience {
 
         this.updateControls(this.deltaTime);
 
+        // this.transformTheatre.update();
+
         this.stats.end();
         requestAnimationFrame(this.tick);
     }
 
     setDebug() {
         const gui = new GUI();
+        gui.close();
 
         const dirFolder = gui.addFolder("Directional light");
 
