@@ -58,11 +58,12 @@ class Experience {
             0.1,
             100
         );
-        this.camera.position.set(0, 2, 5);
+        this.camera.position.set(0, 2, 10);
 
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.enableDamping = true;
         this.controls = controls;
+        controls.target.set(0, -2, 0);
 
         this.updateControls = function (deltaTime) {
             controls.dampingFactor = deltaTime * 5;

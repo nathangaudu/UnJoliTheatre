@@ -13,6 +13,7 @@ export default class TransformTheatre {
         this.setTheatre();
         this.setTranformControls();
         this.setRaycaster();
+        this.fixUI();
     }
 
     setTheatre() {
@@ -86,12 +87,37 @@ export default class TransformTheatre {
                 }
             });
 
-            this.sheetArr.push(sheetObj);
+            function updateProps(intersected) {
+                studio.transaction(({ set }) => {
+                    if (position) {
+                        set(sheetObj.props.position, {
+                            x: intersected.position.x,
+                            y: intersected.position.y,
+                            z: intersected.position.z,
+                        });
+                    }
 
-            const { projectId, sheetId, sheetInstanceId, objectKey } =
-                sheetObj.address;
+                    if (rotation) {
+                        set(sheetObj.props.rotation, {
+                            x: intersected.rotation.x,
+                            y: intersected.rotation.y,
+                            z: intersected.rotation.z,
+                        });
+                    }
+                    if (scale) {
+                        set(sheetObj.props.scale, {
+                            x: intersected.scale.x,
+                            y: intersected.scale.y,
+                            z: intersected.scale.z,
+                        });
+                    }
+                });
+            }
 
-            console.log(projectId, sheetId, sheetInstanceId, objectKey);
+            this.sheetArr.push({
+                uuid: mesh.uuid,
+                updateProps: updateProps,
+            });
         };
     }
 
@@ -123,22 +149,10 @@ export default class TransformTheatre {
 
         this.transformControl.addEventListener("objectChange", (event) => {
             const obj = this.sheetArr.find(
-                (obj) => obj.address.objectKey === this.intersected.uuid
+                (obj) => obj.uuid === this.intersected.uuid
             );
 
-            studio.transaction(({ set }) => {
-                set(obj.props.position.x, this.intersected.position.x);
-                set(obj.props.position.y, this.intersected.position.y);
-                set(obj.props.position.z, this.intersected.position.z);
-
-                set(obj.props.rotation.x, this.intersected.rotation.x);
-                set(obj.props.rotation.y, this.intersected.rotation.y);
-                set(obj.props.rotation.z, this.intersected.rotation.z);
-
-                set(obj.props.scale.x, this.intersected.scale.x);
-                set(obj.props.scale.y, this.intersected.scale.y);
-                set(obj.props.scale.z, this.intersected.scale.z);
-            });
+            obj.updateProps(this.intersected);
         });
 
         window.addEventListener("keydown", (e) => {
@@ -192,5 +206,17 @@ export default class TransformTheatre {
         });
     }
 
-    update() {}
+    fixUI() {
+        // prevent raycasting in threejs when clicking on animate UI
+        setTimeout(() => {
+            const shadowroot = document.querySelector(
+                "#theatrejs-studio-root"
+            ).shadowRoot;
+
+            const animateUI = shadowroot.querySelector(".sc-gEkIjz");
+            animateUI.addEventListener("pointerdown", (e) => {
+                e.stopPropagation();
+            });
+        }, 500);
+    }
 }
