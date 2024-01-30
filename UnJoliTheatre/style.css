@@ -1,3 +1,5 @@
 #unjolitheatre-renderer {
     border: 2px solid #202225;
+    position: relative;
+    left: 200px;
 }

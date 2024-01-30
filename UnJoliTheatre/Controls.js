@@ -1,7 +1,7 @@
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 
 export default class Controls {
-    constructor(canvas, camera, scene) {
+    constructor(camera, canvas, orbit) {
         window.unjolitheatre.controls = this;
 
         this.unjolitheatre = window.unjolitheatre;
@@ -9,9 +9,9 @@ export default class Controls {
         this.raycaster = this.unjolitheatre.raycaster;
 
         this.scene = this.unjolitheatre.scene;
-        this.camera = this.unjolitheatre.camera;
-        this.canvas = this.unjolitheatre.canvas;
-        this.orbit = this.unjolitheatre.orbit;
+        this.camera = camera;
+        this.canvas = canvas;
+        this.orbit = orbit;
 
         this.sheetArr = this.theatre.sheetArr;
 
@@ -23,6 +23,8 @@ export default class Controls {
 
         this.scene.add(this.transformControl);
 
+        console.log(this.scene);
+
         // set var
         this.isTransform = false;
         this.mouseDown = false;
@@ -30,7 +32,7 @@ export default class Controls {
 
         // set event
         this.transformControl.addEventListener("dragging-changed", (event) => {
-            this.orbit.enabled = !event.value;
+            if (this.orbit) this.orbit.enabled = !event.value;
         });
 
         this.transformControl.addEventListener("mouseDown", (event) => {

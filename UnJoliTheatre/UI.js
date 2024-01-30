@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import Raycaster from "./Raycaster";
+import Controls from "./Controls";
 
 export default class UI {
     constructor() {
@@ -11,6 +13,8 @@ export default class UI {
         this.addToSheet = this.theatre.addToSheet;
 
         this.setUI();
+        this.setNewRaycaster();
+
         this.fixUI();
     }
 
@@ -40,7 +44,7 @@ export default class UI {
         this.camera2.position.set(-10, 5, 10);
         this.camera2.lookAt(0, 0, 0);
 
-        const controls = new OrbitControls(this.camera2, this.canvas2);
+        this.orbit = new OrbitControls(this.camera2, this.canvas2);
 
         this.dummyBox = new THREE.Mesh(
             new THREE.BoxGeometry(),
@@ -54,6 +58,16 @@ export default class UI {
             name: "Camera",
             camera: this.camera,
         });
+    }
+
+    setNewRaycaster() {
+        this.controls = new Controls(this.camera2, this.canvas2, this.orbit);
+        this.raycaster = new Raycaster(
+            this.camera2,
+            this.renderer2,
+            this.controls
+        );
+        this.controls.raycaster = this.raycaster;
     }
 
     update() {

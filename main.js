@@ -5,7 +5,6 @@ import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
 import UnJoliTheatre from "./UnJoliTheatre/main.js";
-import { types, val } from "@theatre/core";
 
 class Experience {
     constructor(canvas) {
@@ -60,14 +59,14 @@ class Experience {
         );
         this.camera.position.set(0, 2, 10);
 
-        const controls = new OrbitControls(this.camera, this.canvas);
-        controls.enableDamping = true;
-        this.controls = controls;
-        controls.target.set(0, -2, 0);
+        // const controls = new OrbitControls(this.camera, this.canvas);
+        // controls.enableDamping = true;
+        // this.controls = controls;
+        // controls.target.set(0, -2, 0);
 
         this.updateControls = function (deltaTime) {
-            controls.dampingFactor = deltaTime * 5;
-            controls.update();
+            // controls.dampingFactor = deltaTime * 5;
+            // controls.update();
         };
     }
 

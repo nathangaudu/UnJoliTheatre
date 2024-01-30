@@ -1,13 +1,15 @@
 import * as THREE from "three";
 
 export default class Raycaster {
-    constructor() {
+    constructor(camera, renderer, controls) {
         window.unjolitheatre.raycaster = this;
 
         this.unjolitheatre = window.unjolitheatre;
-        this.controls = this.unjolitheatre.controls;
+        this.controls = controls;
         this.scene = this.unjolitheatre.scene;
-        this.camera = this.unjolitheatre.camera;
+        this.camera = camera;
+        this.renderer = renderer;
+
         this.scene = this.unjolitheatre.scene;
 
         this.sheetArr = this.unjolitheatre.theatre.sheetArr;
@@ -49,17 +51,22 @@ export default class Raycaster {
         window.addEventListener("pointerup", (e) => {
             pointerDown = false;
 
-            pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-            pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            // Calc the raycasting pointer depending of the canvas position
+            const rect = this.renderer.domElement.getBoundingClientRect();
+
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            pointer.x = (x / this.renderer.domElement.clientWidth) * 2 - 1;
+            pointer.y = (y / this.renderer.domElement.clientHeight) * -2 + 1;
+
+            console.log(pointer);
 
             // update the picking ray with the camera and pointer position
             raycaster.setFromCamera(pointer, this.camera);
 
             // calculate objects intersecting the picking ray
             const intersects = raycaster.intersectObjects(this.scene.children);
-
-            // define controls
-            this.controls = window.unjolitheatre.controls;
 
             if (
                 intersects.length > 0 &&
