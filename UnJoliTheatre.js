@@ -24,72 +24,54 @@ export default class TransformTheatre {
         this.sheet = project.sheet("Animated scene");
         this.sheetArr = [];
 
-        this.addToSheet = ({ mesh, name, position, rotation, scale }) => {
+        this.addToSheet = ({ mesh, name }) => {
             const sheetObj = this.sheet.object(name, {
-                ...(position
-                    ? {
-                          position: types.compound({
-                              x: types.number(mesh.position.x, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              y: types.number(mesh.position.y, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              z: types.number(mesh.position.z, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                          }),
-                      }
-                    : {}),
-                ...(rotation
-                    ? {
-                          rotation: types.compound({
-                              x: types.number(mesh.rotation.x, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              y: types.number(mesh.rotation.y, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              z: types.number(mesh.rotation.z, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                          }),
-                      }
-                    : {}),
-                ...(scale
-                    ? {
-                          scale: types.compound({
-                              x: types.number(mesh.scale.x, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              y: types.number(mesh.scale.y, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                              z: types.number(mesh.scale.z, {
-                                  nudgeMultiplier: 0.01,
-                              }),
-                          }),
-                      }
-                    : {}),
+                position: types.compound({
+                    x: types.number(mesh.position.x, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    y: types.number(mesh.position.y, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    z: types.number(mesh.position.z, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                }),
+
+                rotation: types.compound({
+                    x: types.number(mesh.rotation.x, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    y: types.number(mesh.rotation.y, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    z: types.number(mesh.rotation.z, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                }),
+
+                scale: types.compound({
+                    x: types.number(mesh.scale.x, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    y: types.number(mesh.scale.y, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                    z: types.number(mesh.scale.z, {
+                        nudgeMultiplier: 0.01,
+                    }),
+                }),
             });
 
             sheetObj.onValuesChange(({ position, rotation, scale }) => {
-                if (position) {
-                    mesh.position.set(position.x, position.y, position.z);
-                }
-
-                if (rotation) {
-                    mesh.rotation.set(rotation.x, rotation.y, rotation.z);
-                }
-
-                if (scale) {
-                    mesh.scale.set(scale.x, scale.y, scale.z);
-                }
+                mesh.position.set(position.x, position.y, position.z);
+                mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+                mesh.scale.set(scale.x, scale.y, scale.z);
             });
 
-            function updateProps(intersected) {
+            function updateProps(intersected, mode) {
                 studio.transaction(({ set }) => {
-                    if (position) {
+                    if (mode === "translate") {
                         set(sheetObj.props.position, {
                             x: intersected.position.x,
                             y: intersected.position.y,
@@ -97,14 +79,14 @@ export default class TransformTheatre {
                         });
                     }
 
-                    if (rotation) {
+                    if (mode === "rotate") {
                         set(sheetObj.props.rotation, {
                             x: intersected.rotation.x,
                             y: intersected.rotation.y,
                             z: intersected.rotation.z,
                         });
                     }
-                    if (scale) {
+                    if (mode === "scale") {
                         set(sheetObj.props.scale, {
                             x: intersected.scale.x,
                             y: intersected.scale.y,
@@ -153,7 +135,7 @@ export default class TransformTheatre {
             );
 
             // Update all props of theatre
-            obj.updateProps(this.intersected);
+            obj.updateProps(this.intersected, this.transformControl.getMode());
         });
 
         // set the mode
