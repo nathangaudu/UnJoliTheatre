@@ -1,5 +1,5 @@
 import studio from "@theatre/studio";
-import { getProject, types, val } from "@theatre/core";
+import { getProject, types } from "@theatre/core";
 
 export default class Theatre {
     constructor() {

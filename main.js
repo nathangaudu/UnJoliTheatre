@@ -169,15 +169,12 @@ class Experience {
             this.renderer,
             this.scene,
             this.camera
-            // this.controls
+            // this.controls // if you use orbit control, add it here
         );
 
         this.unJoliTheatre.addToSheet({
             mesh: this.mesh,
             name: "Box",
-            position: true,
-            rotation: true,
-            scale: true,
         });
     }
 }

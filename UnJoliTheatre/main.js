@@ -3,7 +3,6 @@ import Raycaster from "./Raycaster.js";
 import Controls from "./Controls.js";
 import UI from "./UI.js";
 import "./style.css";
-import * as THREE from "three";
 
 export default class TransformTheatre {
     constructor(canvas, renderer, scene, camera, orbit) {
