@@ -1,5 +1,68 @@
-#unjolitheatre-renderer {
-    border: 2px solid #202225;
+#unjolitheatre-ui {
+    position: fixed;
+    inset: 0;
+
+    & button {
+        all: unset;
+        position: fixed;
+        box-sizing: border-box;
+        top: 12px;
+        left: 50px;
+        width: 32px;
+        height: 32px;
+        background-color: #202225;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: rgba(59, 63, 69, 0.8);
+        }
+    }
+}
+
+#unjolitheatre {
+    /* left: 200px; */
     position: relative;
-    left: 200px;
+    width: fit-content;
+    display: none;
+
+    & .topBar {
+        height: 30px;
+        background-color: #202225;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgba(255, 255, 255, 0.8);
+
+        & p {
+            padding: 10px;
+            font-size: 11px;
+            font-family: apple-system, BlinkMacSystemFont, "Segoe WPC",
+                "Segoe Editor", HelveticaNeue-Light, Ubuntu, "Droid Sans",
+                sans-serif;
+        }
+
+        & svg {
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s;
+
+            &:hover {
+                color: rgb(182, 182, 182);
+            }
+        }
+    }
+
+    & canvas {
+        position: relative;
+        outline: none;
+        border: 2px solid #202225;
+    }
 }

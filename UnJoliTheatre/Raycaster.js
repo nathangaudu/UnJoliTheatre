@@ -60,8 +60,6 @@ export default class Raycaster {
             pointer.x = (x / this.renderer.domElement.clientWidth) * 2 - 1;
             pointer.y = (y / this.renderer.domElement.clientHeight) * -2 + 1;
 
-            console.log(pointer);
-
             // update the picking ray with the camera and pointer position
             raycaster.setFromCamera(pointer, this.camera);
 
