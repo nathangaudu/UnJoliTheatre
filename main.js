@@ -4,7 +4,7 @@ import vertex from "./shaders/vertex.glsl?raw";
 import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
-import UnJoliTheatre from "./UnJoliTheatre/UnJoliTheatre.js";
+import UnJoliTheatre from "./UnJoliTheatre/main.js";
 import { types, val } from "@theatre/core";
 
 class Experience {
