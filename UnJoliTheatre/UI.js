@@ -44,12 +44,22 @@ export default class UI {
         this.camera2.position.set(-10, 5, 10);
         this.camera2.lookAt(0, 0, 0);
 
+        // Camera Helper for the base camera
+        const camHelper = new THREE.CameraHelper(this.camera);
+        this.scene.add(camHelper);
+
+        // orbit for the new cam
         this.orbit = new OrbitControls(this.camera2, this.canvas2);
 
         this.dummyBox = new THREE.Mesh(
             new THREE.BoxGeometry(),
-            new THREE.MeshBasicMaterial({ color: "red", wireframe: true })
+            new THREE.MeshBasicMaterial({
+                color: "red",
+                wireframe: true,
+                visible: false,
+            })
         );
+        this.dummyBox.rotation.x = -Math.PI / 2;
 
         this.scene.add(this.dummyBox);
         this.dummyBox.position.copy(this.camera.position);

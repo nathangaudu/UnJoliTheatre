@@ -61,8 +61,10 @@ class Experience {
 
         // const controls = new OrbitControls(this.camera, this.canvas);
         // controls.enableDamping = true;
-        // this.controls = controls;
         // controls.target.set(0, -2, 0);
+        // controls.enabled = false;
+
+        // this.controls = controls;
 
         this.updateControls = function (deltaTime) {
             // controls.dampingFactor = deltaTime * 5;
@@ -166,8 +168,8 @@ class Experience {
             this.canvas,
             this.renderer,
             this.scene,
-            this.camera,
-            this.controls
+            this.camera
+            // this.controls
         );
 
         this.unJoliTheatre.addToSheet({

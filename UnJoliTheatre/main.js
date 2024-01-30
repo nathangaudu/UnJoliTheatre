@@ -3,6 +3,7 @@ import Raycaster from "./Raycaster.js";
 import Controls from "./Controls.js";
 import UI from "./UI.js";
 import "./style.css";
+import * as THREE from "three";
 
 export default class TransformTheatre {
     constructor(canvas, renderer, scene, camera, orbit) {
@@ -19,7 +20,7 @@ export default class TransformTheatre {
         this.addToSheet = this.theatre.addToSheet; // Function to add new obj to theatre
 
         // Raycaster.js
-        this.controls = new Controls(this.camera, this.canvas);
+        this.controls = new Controls(this.camera, this.canvas, this.orbit);
 
         this.raycaster = new Raycaster(
             this.camera,

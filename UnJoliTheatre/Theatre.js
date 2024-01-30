@@ -43,25 +43,41 @@ export default class Theatre {
                 }),
             }),
 
-            scale: types.compound({
-                x: types.number(mesh.scale.x, {
-                    nudgeMultiplier: 0.01,
-                }),
-                y: types.number(mesh.scale.y, {
-                    nudgeMultiplier: 0.01,
-                }),
-                z: types.number(mesh.scale.z, {
-                    nudgeMultiplier: 0.01,
-                }),
-            }),
+            ...(!camera
+                ? {
+                      scale: types.compound({
+                          x: types.number(mesh.scale.x, {
+                              nudgeMultiplier: 0.01,
+                          }),
+                          y: types.number(mesh.scale.y, {
+                              nudgeMultiplier: 0.01,
+                          }),
+                          z: types.number(mesh.scale.z, {
+                              nudgeMultiplier: 0.01,
+                          }),
+                      }),
+                  }
+                : {}),
         });
 
+        // changes from theatre UI
         sheetObj.onValuesChange(({ position, rotation, scale }) => {
             mesh.position.set(position.x, position.y, position.z);
             mesh.rotation.set(rotation.x, rotation.y, rotation.z);
-            mesh.scale.set(scale.x, scale.y, scale.z);
+            if (!camera) mesh.scale.set(scale.x, scale.y, scale.z);
+
+            if (camera) {
+                camera.position.copy({
+                    x: position.x,
+                    y: position.y,
+                    z: position.z,
+                });
+
+                camera.lookAt(rotation.x, rotation.y, rotation.z);
+            }
         });
 
+        // changes from transformControls
         function updateProps(intersected, mode) {
             studio.transaction(({ set }) => {
                 if (mode === "translate") {
@@ -85,14 +101,20 @@ export default class Theatre {
                         z: intersected.scale.z,
                     });
                 }
-                // // update the cam position
-                // if (camera) {
-                //     camera.position.copy({
-                //         x: intersected.position.x,
-                //         y: intersected.position.y,
-                //         z: intersected.position.z,
-                //     });
-                // }
+                // update the cam position
+                if (camera) {
+                    camera.position.copy({
+                        x: intersected.position.x,
+                        y: intersected.position.y,
+                        z: intersected.position.z,
+                    });
+
+                    camera.lookAt(
+                        intersected.rotation.x,
+                        intersected.rotation.y,
+                        intersected.rotation.z
+                    );
+                }
             });
         }
 
