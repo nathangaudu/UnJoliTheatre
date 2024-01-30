@@ -152,22 +152,17 @@ export default class TransformTheatre {
                 (obj) => obj.uuid === this.intersected.uuid
             );
 
+            // Update all props of theatre
             obj.updateProps(this.intersected);
         });
 
+        // set the mode
         window.addEventListener("keydown", (e) => {
             let key = e.key.toLocaleLowerCase();
 
             if (key === "g") this.transformControl.setMode("translate");
             if (key === "s") this.transformControl.setMode("scale");
             if (key === "r") this.transformControl.setMode("rotate");
-            if (key === " ") this.disableRaycast = true;
-        });
-
-        window.addEventListener("keyup", (e) => {
-            let key = e.key.toLocaleLowerCase();
-
-            if (key === " ") this.disableRaycast = false;
         });
     }
 
@@ -176,7 +171,33 @@ export default class TransformTheatre {
         const pointer = new THREE.Vector2();
         this.intersected = undefined;
 
+        const originPosition = new THREE.Vector2();
+        let pointerDown = false;
+
+        // Handle drag
         window.addEventListener("pointerdown", (e) => {
+            pointerDown = true;
+            this.disableRaycast = false;
+
+            originPosition.x = e.clientX;
+            originPosition.y = e.clientY;
+        });
+
+        window.addEventListener("pointermove", (e) => {
+            if (!pointerDown) return;
+
+            let totalDragged =
+                Math.abs(originPosition.x - e.clientX) +
+                Math.abs(originPosition.y - e.clientY);
+
+            if (totalDragged > 30) {
+                this.disableRaycast = true;
+            }
+        });
+
+        window.addEventListener("pointerup", (e) => {
+            pointerDown = false;
+
             pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
             pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
 

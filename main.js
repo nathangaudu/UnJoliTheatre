@@ -4,7 +4,7 @@ import vertex from "./shaders/vertex.glsl?raw";
 import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
-import TransformTheatre from "./TransformTheatre";
+import UnJoliTheatre from "./UnJoliTheatre";
 import { types, val } from "@theatre/core";
 
 class Experience {
@@ -161,14 +161,14 @@ class Experience {
 
         // Theatre part
 
-        this.transformTheatre = new TransformTheatre(
+        this.unJoliTheatre = new UnJoliTheatre(
             this.renderer,
             this.scene,
             this.camera,
             this.controls
         );
 
-        this.transformTheatre.addToSheet({
+        this.unJoliTheatre.addToSheet({
             mesh: this.mesh,
             name: "Box",
             position: true,
