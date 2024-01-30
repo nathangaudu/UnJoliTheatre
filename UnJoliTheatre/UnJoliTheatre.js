@@ -2,18 +2,21 @@ import * as THREE from "three";
 import studio from "@theatre/studio";
 import { getProject, types, val } from "@theatre/core";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
+import "./style.css";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export default class TransformTheatre {
-    constructor(renderer, scene, camera, orbit) {
-        this.renderer = renderer;
+    constructor(canvas1, renderer, scene, camera, orbit) {
+        (this.canvas1 = canvas1), (this.renderer = renderer);
         this.scene = scene;
         this.camera = camera;
         this.orbit = orbit;
 
         this.setTheatre();
-        this.setTranformControls();
         this.setRaycaster();
         this.fixUI();
+        this.createNewUI();
+        this.setTranformControls();
     }
 
     setTheatre() {
@@ -24,7 +27,7 @@ export default class TransformTheatre {
         this.sheet = project.sheet("Animated scene");
         this.sheetArr = [];
 
-        this.addToSheet = ({ mesh, name }) => {
+        this.addToSheet = ({ mesh, name, camera }) => {
             const sheetObj = this.sheet.object(name, {
                 position: types.compound({
                     x: types.number(mesh.position.x, {
@@ -78,7 +81,6 @@ export default class TransformTheatre {
                             z: intersected.position.z,
                         });
                     }
-
                     if (mode === "rotate") {
                         set(sheetObj.props.rotation, {
                             x: intersected.rotation.x,
@@ -93,8 +95,18 @@ export default class TransformTheatre {
                             z: intersected.scale.z,
                         });
                     }
+                    // // update the cam position
+                    // if (camera) {
+                    //     camera.position.copy({
+                    //         x: intersected.position.x,
+                    //         y: intersected.position.y,
+                    //         z: intersected.position.z,
+                    //     });
+                    // }
                 });
             }
+
+            console.log(mesh);
 
             this.sheetArr.push({
                 uuid: mesh.uuid,
@@ -106,7 +118,7 @@ export default class TransformTheatre {
     setTranformControls() {
         this.transformControl = new TransformControls(
             this.camera,
-            this.renderer.domElement
+            this.canvas1
         );
 
         this.scene.add(this.transformControl);
@@ -134,7 +146,7 @@ export default class TransformTheatre {
                 (obj) => obj.uuid === this.intersected.uuid
             );
 
-            // Update all props of theatre
+            // // Update all props of theatre
             obj.updateProps(this.intersected, this.transformControl.getMode());
         });
 
@@ -200,6 +212,12 @@ export default class TransformTheatre {
                 );
 
                 if (intersectTarget) {
+                    // verify if the intersect is added to theatre
+                    const abc = this.sheetArr.find(
+                        (el) => el.uuid === intersectTarget.object.uuid
+                    );
+                    if (!abc) return;
+
                     this.intersected = intersectTarget.object;
                     this.transformControl.attach(this.intersected);
                 } else {
@@ -212,14 +230,57 @@ export default class TransformTheatre {
     fixUI() {
         // prevent raycasting in threejs when clicking on animate UI
         setTimeout(() => {
-            const shadowroot = document.querySelector(
-                "#theatrejs-studio-root"
-            ).shadowRoot;
-
-            const animateUI = shadowroot.querySelector(".sc-gEkIjz");
-            animateUI.addEventListener("pointerdown", (e) => {
-                e.stopPropagation();
-            });
+            document
+                .querySelector("#theatrejs-studio-root")
+                .addEventListener("pointerdown", (e) => {
+                    e.stopPropagation();
+                });
         }, 500);
+    }
+
+    createNewUI() {
+        this.canvas2 = document.createElement("canvas");
+        this.canvas2.id = "unjolitheatre-renderer";
+
+        document.body.appendChild(this.canvas2);
+
+        // new renderer
+        this.renderer2 = new THREE.WebGLRenderer({
+            canvas: this.canvas2,
+        });
+        this.renderer2.setSize(window.innerWidth / 2, window.innerHeight / 2);
+        this.renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer2.setClearColor("black");
+        this.renderer2.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer2.toneMappingExposure = 1;
+
+        // new camera
+        this.camera2 = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            100
+        );
+        this.camera2.position.set(-10, 5, 10);
+        this.camera2.lookAt(0, 0, 0);
+
+        const controls = new OrbitControls(this.camera2, this.canvas2);
+
+        this.dummyBox = new THREE.Mesh(
+            new THREE.BoxGeometry(),
+            new THREE.MeshBasicMaterial({ color: "red", wireframe: true })
+        );
+
+        this.scene.add(this.dummyBox);
+        this.dummyBox.position.copy(this.camera.position);
+        this.addToSheet({
+            mesh: this.dummyBox,
+            name: "Camera",
+            camera: this.camera,
+        });
+    }
+
+    update() {
+        this.renderer2.render(this.scene, this.camera2);
     }
 }

@@ -4,7 +4,7 @@ import vertex from "./shaders/vertex.glsl?raw";
 import fragment from "./shaders/fragment.glsl?raw";
 import GUI from "lil-gui";
 import Stats from "./Stats";
-import UnJoliTheatre from "./UnJoliTheatre";
+import UnJoliTheatre from "./UnJoliTheatre/UnJoliTheatre.js";
 import { types, val } from "@theatre/core";
 
 class Experience {
@@ -137,6 +137,8 @@ class Experience {
 
         this.renderer.render(this.scene, this.camera);
 
+        this.unJoliTheatre.update();
+
         this.updateControls(this.deltaTime);
 
         this.stats.end();
@@ -162,6 +164,7 @@ class Experience {
         // Theatre part
 
         this.unJoliTheatre = new UnJoliTheatre(
+            this.canvas,
             this.renderer,
             this.scene,
             this.camera,
