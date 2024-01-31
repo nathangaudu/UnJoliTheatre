@@ -76,6 +76,10 @@ export default class Raycaster {
                         el.object.type === "Mesh" && el.object.renderOrder === 0 // handler invisible cylinder from transformcontrol => his renderOrder = "infinity"
                 );
 
+                const intersectLight = intersects.find(
+                    (el) => el.object.parent.type === "DirectionalLightHelper"
+                );
+
                 if (intersectTarget) {
                     // verify if the intersect is added to theatre
                     const abc = this.sheetArr.find(
@@ -84,6 +88,9 @@ export default class Raycaster {
                     if (!abc) return;
 
                     this.intersected = intersectTarget.object;
+                    this.controls.transformControl.attach(this.intersected);
+                } else if (intersectLight) {
+                    this.intersected = intersectLight.object.parent.light;
                     this.controls.transformControl.attach(this.intersected);
                 } else {
                     this.controls.transformControl.detach(this.intersected);

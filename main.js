@@ -79,8 +79,8 @@ class Experience {
         this.dir.shadow.mapSize = new THREE.Vector2(1024 * 2, 1024 * 2);
         this.scene.add(this.dir);
 
-        this.dirHelp = new THREE.CameraHelper(this.dir.shadow.camera, 1, "red");
-        // this.scene.add(this.dirHelp);
+        this.dirHelp = new THREE.DirectionalLightHelper(this.dir);
+        this.scene.add(this.dirHelp);
 
         this.ambient = new THREE.AmbientLight();
         this.scene.add(this.ambient);
@@ -176,6 +176,11 @@ class Experience {
         this.unJoliTheatre.addToSheet({
             mesh: this.mesh,
             name: "Box",
+        });
+
+        this.unJoliTheatre.addToSheet({
+            mesh: this.dir,
+            name: "Directional light",
         });
     }
 }
