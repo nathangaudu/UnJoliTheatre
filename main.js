@@ -164,13 +164,14 @@ class Experience {
 
         // Theatre part
 
-        this.unJoliTheatre = new UnJoliTheatre(
-            this.canvas,
-            this.renderer,
-            this.scene,
-            this.camera
-            // this.controls // if you use orbit control, add it here
-        );
+        this.unJoliTheatre = new UnJoliTheatre({
+            canvas: this.canvas,
+            renderer: this.renderer,
+            scene: this.scene,
+            camera: this.camera,
+            // orbit: // this.controls // if you use orbit control, add it here
+            production: false, // set to false to enable the ui
+        });
 
         this.unJoliTheatre.addToSheet({
             mesh: this.mesh,

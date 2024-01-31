@@ -17,7 +17,6 @@ export default class UI {
         this.setCloseOpen();
         this.setUI3D();
         this.setNewRaycaster();
-
         this.fixUI();
     }
 
@@ -158,24 +157,6 @@ export default class UI {
 
         // orbit for the new cam
         this.orbit = new OrbitControls(this.camera2, this.canvas2);
-
-        this.dummyBox = new THREE.Mesh(
-            new THREE.BoxGeometry(),
-            new THREE.MeshBasicMaterial({
-                color: "red",
-                wireframe: true,
-                visible: false,
-            })
-        );
-        this.dummyBox.rotation.x = -Math.PI / 2;
-
-        this.scene.add(this.dummyBox);
-        this.dummyBox.position.copy(this.camera.position);
-        this.addToSheet({
-            mesh: this.dummyBox,
-            name: "Camera",
-            camera: this.camera,
-        });
     }
 
     setNewRaycaster() {

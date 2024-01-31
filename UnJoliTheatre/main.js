@@ -3,9 +3,10 @@ import Raycaster from "./Raycaster.js";
 import Controls from "./Controls.js";
 import UI from "./UI.js";
 import "./style.css";
+import DummyBox from "./DummyBox.js";
 
 export default class TransformTheatre {
-    constructor(canvas, renderer, scene, camera, orbit) {
+    constructor({ canvas, renderer, scene, camera, orbit, production }) {
         window.unjolitheatre = this;
 
         this.canvas = canvas;
@@ -13,10 +14,15 @@ export default class TransformTheatre {
         this.scene = scene;
         this.camera = camera;
         this.orbit = orbit;
+        this.production = production;
 
         // Theatre.js
         this.theatre = new Theatre();
         this.addToSheet = this.theatre.addToSheet; // Function to add new obj to theatre
+
+        this.dummyBox = new DummyBox(); // create the dummy box who's equal to the camera pos
+
+        if (this.production) return;
 
         // Raycaster.js
         this.controls = new Controls(this.camera, this.canvas, this.orbit);
@@ -32,6 +38,7 @@ export default class TransformTheatre {
     }
 
     update() {
+        if (this.production) return;
         this.ui.update();
     }
 }

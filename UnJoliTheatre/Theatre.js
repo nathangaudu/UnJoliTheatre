@@ -1,20 +1,29 @@
 import studio from "@theatre/studio";
 import { getProject, types } from "@theatre/core";
+import projectState from "../projectState.json";
 
 export default class Theatre {
     constructor() {
         window.unjolitheatre.theatre = this;
 
+        this.production = window.unjolitheatre.production;
+
         this.setTheatre();
     }
 
     setTheatre() {
-        studio.initialize();
+        studio.initialize(); // don't forget to comment it for the prod and comment the import
 
-        const project = getProject("THREE.js x Theatre.js");
+        this.project = getProject("THREE.js x Theatre.js", {
+            // state: projectState,
+        });
 
-        this.sheet = project.sheet("Animated scene");
+        this.sheet = this.project.sheet("Animated scene");
         this.sheetArr = [];
+
+        this.project.ready.then(() =>
+            this.sheet.sequence.play({ iterationCount: Infinity })
+        );
     }
 
     addToSheet = ({ mesh, name, camera }) => {
