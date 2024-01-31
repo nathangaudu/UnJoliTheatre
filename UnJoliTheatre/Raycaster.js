@@ -49,6 +49,8 @@ export default class Raycaster {
         });
 
         window.addEventListener("pointerup", (e) => {
+            if (e.target !== this.renderer.domElement) return;
+
             pointerDown = false;
 
             // Calc the raycasting pointer depending of the canvas position
