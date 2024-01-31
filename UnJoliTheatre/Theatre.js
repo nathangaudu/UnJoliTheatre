@@ -1,6 +1,6 @@
 import studio from "@theatre/studio";
 import { getProject, types } from "@theatre/core";
-import projectState from "../projectState.json";
+// import projectState from "../projectState.json";
 
 export default class Theatre {
     constructor() {
