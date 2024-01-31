@@ -23,8 +23,6 @@ export default class Controls {
 
         this.scene.add(this.transformControl);
 
-        console.log(this.scene);
-
         // set var
         this.isTransform = false;
         this.mouseDown = false;
