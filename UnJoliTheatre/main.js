@@ -5,7 +5,7 @@ import UI from "./UI.js";
 import "./style.css";
 import DummyBox from "./DummyBox.js";
 
-export default class TransformTheatre {
+export default class UnJoliTheatre {
     constructor({ canvas, renderer, scene, camera, orbit, production }) {
         window.unjolitheatre = this;
 
