@@ -73,11 +73,8 @@ export default class UI {
             pointer.x = e.clientX;
             pointer.y = e.clientY;
 
-            console.log(pointer);
-
-            interfaceWidth = this.interface.getBoundingClientRect().width + 15;
-            interfaceHeight =
-                this.interface.getBoundingClientRect().height + 15;
+            interfaceWidth = this.interface.getBoundingClientRect().width;
+            interfaceHeight = this.interface.getBoundingClientRect().height;
         });
 
         window.addEventListener("pointermove", (e) => {
@@ -113,6 +110,10 @@ export default class UI {
             .querySelector("#unjolitheatre .topBar svg")
             .addEventListener("click", () => {
                 this.interface.style.display = "none";
+
+                this.controls.transformControl.detach(
+                    this.unjolitheatre.raycaster.intersected
+                );
             });
 
         document
@@ -135,11 +136,9 @@ export default class UI {
         this.renderer2 = new THREE.WebGLRenderer({
             canvas: this.canvas2,
         });
-        this.renderer2.setSize(window.innerWidth / 2, window.innerHeight / 2);
+        this.renderer2.setSize(window.innerWidth / 3, window.innerHeight / 3);
         this.renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer2.setClearColor("black");
-        this.renderer2.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer2.toneMappingExposure = 1;
 
         // new camera
         this.camera2 = new THREE.PerspectiveCamera(

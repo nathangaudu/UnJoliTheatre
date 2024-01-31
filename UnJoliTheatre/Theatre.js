@@ -21,9 +21,9 @@ export default class Theatre {
         this.sheet = this.project.sheet("Animated scene");
         this.sheetArr = [];
 
-        this.project.ready.then(() =>
-            this.sheet.sequence.play({ iterationCount: Infinity })
-        );
+        // this.project.ready.then(() =>
+        //     this.sheet.sequence.play({ iterationCount: Infinity })
+        // );
     }
 
     addToSheet = ({ mesh, name, camera }) => {
