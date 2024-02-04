@@ -82,6 +82,10 @@ class Experience {
         this.dirHelp = new THREE.DirectionalLightHelper(this.dir);
         this.scene.add(this.dirHelp);
 
+        this.pointLight = new THREE.SpotLight();
+        this.pointLightHelp = new THREE.SpotLightHelper(this.pointLight);
+        this.scene.add(this.pointLight, this.pointLightHelp);
+
         this.ambient = new THREE.AmbientLight();
         this.scene.add(this.ambient);
     }
@@ -180,7 +184,12 @@ class Experience {
 
         this.unJoliTheatre.addToSheet({
             mesh: this.dir,
-            name: "Directional light",
+            name: this.dir.type,
+        });
+
+        this.unJoliTheatre.addToSheet({
+            mesh: this.pointLight,
+            name: this.pointLight.type,
         });
     }
 }

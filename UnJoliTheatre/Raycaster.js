@@ -79,7 +79,7 @@ export default class Raycaster {
                 );
 
                 const intersectLight = intersects.find(
-                    (el) => el.object.parent.type === "DirectionalLightHelper"
+                    (el) => el.object.light || el.object.parent.light
                 );
 
                 if (intersectTarget) {
@@ -92,7 +92,9 @@ export default class Raycaster {
                     this.intersected = intersectTarget.object;
                     this.controls.transformControl.attach(this.intersected);
                 } else if (intersectLight) {
-                    this.intersected = intersectLight.object.parent.light;
+                    this.intersected =
+                        intersectLight.object.light ||
+                        intersectLight.object.parent.light;
                     this.controls.transformControl.attach(this.intersected);
                 } else {
                     this.controls.transformControl.detach(this.intersected);
